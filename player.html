@@ -1,83 +1,48 @@
-<!DOCTYPE html>
-<html lang="ar">
+
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IPTV Player</title>
+  <!-- Cloudinary player CSS -->
+  <link href="https://unpkg.com/cloudinary-video-player/dist/cld-video-player.min.css" rel="stylesheet"></link>
 
-<!-- Video.js CSS -->
-<link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
+  <!-- Cloudinary Core JS -->
+  <script src="https://unpkg.com/cloudinary-core@2.8.2/cloudinary-core-shrinkwrap.min.js" type="text/javascript"></script>
 
-<!-- hls.js -->
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-
-<!-- Video.js JS -->
-<script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
-
-<style>
-body {
-    margin: 0;
-    background-color: #000;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    font-family: "Segoe UI", sans-serif;
-    color: #fff;
-}
-h1 {
-    color: #ff4444;
-    margin-bottom: 15px;
-}
-.player-container {
-    width: 95%;
-    max-width: 1200px;
-}
-video {
-    width: 100%;
-    height: 650px;
-    border-radius: 15px;
-    box-shadow: 0 0 25px rgba(255,255,255,0.15);
-    background-color: #000;
-}
-.footer {
-    margin-top: 20px;
-    font-size: 0.9rem;
-    color: #aaa;
-    text-align: center;
-}
-</style>
+  <!-- Cloudinary Player JS -->
+  <script src="https://unpkg.com/cloudinary-video-player/dist/cld-video-player.min.js" type="text/javascript"></script>
+<title>Page Title</title>
 </head>
-
 <body>
-<h1>📺 IPTV Player</h1>
-<div class="player-container">
-    <video id="player" class="video-js vjs-big-play-centered" controls autoplay muted playsinline
-           poster="https://www.w3schools.com/images/img_program_up_frontend_160.webp"></video>
-</div>
-<div class="footer">🔥 Powered by Omar • IPTV & HLS Support</div>
+  <video autoplay="" class="cld-video-player cld-video-player-skin-dark" id="player" muted="" poster="https://www.w3schools.com/images/img_program_up_frontend_160.webp" width="1000px"></video>
 
-<script>
-const video = document.getElementById('player');
-const videoSrc = 'http://py.showplustv.com/live/qRPffUsK/a9xwKd1/11101.m3u8';
-
-if (Hls.isSupported()) {
-    const hls = new Hls({ maxBufferLength: 30, lowLatencyMode: true });
-    hls.loadSource(videoSrc);
-    hls.attachMedia(video);
-    hls.on(Hls.Events.MANIFEST_PARSED, function () {
-        video.play();
-    });
-    hls.on(Hls.Events.ERROR, function (event, data) {
-        console.error("HLS Error:", data);
-    });
-} else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-    video.src = videoSrc;
-    video.addEventListener('loadedmetadata', () => video.play());
-} else {
-    console.error("HLS.js not supported in this browser.");
-}
-</script>
 </body>
+<script>
+const cld = cloudinary.Cloudinary.new({
+  cloud_name: "demo"
+});
+
+const publicId = "dog";
+
+// Set overrideNative and other options
+const player = cld.videoPlayer("player", {
+  html5: {
+    hls: {
+      overrideNative: true
+    }
+  },
+  showLogo: false,
+  controls: true
+});
+
+// Set publicId to play
+player.source("http://py.showplustv.com/get.php?username=qRPffUsK&password=a9xwKd1&type=m3u&output=ts", {
+  sourceTypes: ["hls"],
+  transformation: { streaming_profile: "hd" },
+  info: { title: "عمرو سيد" }
+});
+
+// Access underlying videojs object
+console.log(player.videojs.options_.html5);
+player.videojs.options_.html5.hls.overrideNative = true;
+console.log(player.videojs.options_.html5.hls.overrideNative);
+</script>
 </html>
